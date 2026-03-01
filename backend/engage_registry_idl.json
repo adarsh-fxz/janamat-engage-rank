@@ -1,0 +1,593 @@
+{
+  "address": "6bY93DBKnAct89SGYhNLwEukNpHm6QQ4zbwANVoWL3X9",
+  "metadata": {
+    "name": "engage_registry",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "award_points",
+      "discriminator": [
+        7,
+        146,
+        136,
+        192,
+        102,
+        71,
+        93,
+        106
+      ],
+      "accounts": [
+        {
+          "name": "engage_profile",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  110,
+                  103,
+                  97,
+                  103,
+                  101,
+                  95,
+                  112,
+                  114,
+                  111,
+                  102,
+                  105,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "engage_profile.voter",
+                "account": "EngageProfile"
+              }
+            ]
+          }
+        },
+        {
+          "name": "global_state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "global_state"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "poll_idx",
+          "type": "u64"
+        },
+        {
+          "name": "tx_signature",
+          "type": "string"
+        },
+        {
+          "name": "category",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "close_profile",
+      "discriminator": [
+        167,
+        36,
+        181,
+        8,
+        136,
+        158,
+        46,
+        207
+      ],
+      "accounts": [
+        {
+          "name": "engage_profile",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  110,
+                  103,
+                  97,
+                  103,
+                  101,
+                  95,
+                  112,
+                  114,
+                  111,
+                  102,
+                  105,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "engage_profile.voter",
+                "account": "EngageProfile"
+              }
+            ]
+          }
+        },
+        {
+          "name": "global_state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "global_state"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "global_state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "register_voter",
+      "discriminator": [
+        229,
+        124,
+        185,
+        99,
+        118,
+        51,
+        226,
+        6
+      ],
+      "accounts": [
+        {
+          "name": "engage_profile",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  110,
+                  103,
+                  97,
+                  103,
+                  101,
+                  95,
+                  112,
+                  114,
+                  111,
+                  102,
+                  105,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "voter"
+              }
+            ]
+          }
+        },
+        {
+          "name": "global_state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "voter",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "update_authority",
+      "discriminator": [
+        32,
+        46,
+        64,
+        28,
+        149,
+        75,
+        243,
+        88
+      ],
+      "accounts": [
+        {
+          "name": "global_state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "global_state"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "new_authority",
+          "type": "pubkey"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "EngageProfile",
+      "discriminator": [
+        147,
+        149,
+        226,
+        182,
+        36,
+        47,
+        187,
+        44
+      ]
+    },
+    {
+      "name": "GlobalState",
+      "discriminator": [
+        163,
+        46,
+        74,
+        168,
+        216,
+        123,
+        133,
+        98
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "GlobalStateInitialized",
+      "discriminator": [
+        246,
+        51,
+        83,
+        38,
+        11,
+        74,
+        6,
+        139
+      ]
+    },
+    {
+      "name": "PointsAwarded",
+      "discriminator": [
+        201,
+        95,
+        152,
+        50,
+        215,
+        83,
+        188,
+        38
+      ]
+    },
+    {
+      "name": "VoterRegistered",
+      "discriminator": [
+        184,
+        179,
+        209,
+        46,
+        125,
+        60,
+        51,
+        197
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Unauthorized",
+      "msg": "Only the authority can perform this action"
+    },
+    {
+      "code": 6001,
+      "name": "Overflow",
+      "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6002,
+      "name": "SignatureTooLong",
+      "msg": "Transaction signature is too long (max 88 chars)"
+    },
+    {
+      "code": 6003,
+      "name": "CategoryTooLong",
+      "msg": "Category string is too long (max 32 chars)"
+    },
+    {
+      "code": 6004,
+      "name": "VotedTooSoon",
+      "msg": "Cannot vote again within 24 hours of last vote"
+    }
+  ],
+  "types": [
+    {
+      "name": "EngageProfile",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "voter",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_points",
+            "type": "u64"
+          },
+          {
+            "name": "vote_count",
+            "type": "u64"
+          },
+          {
+            "name": "current_streak",
+            "type": "u32"
+          },
+          {
+            "name": "longest_streak",
+            "type": "u32"
+          },
+          {
+            "name": "last_vote_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GlobalState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_voters",
+            "type": "u64"
+          },
+          {
+            "name": "total_votes_recorded",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GlobalStateInitialized",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PointsAwarded",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "voter",
+            "type": "pubkey"
+          },
+          {
+            "name": "poll_idx",
+            "type": "u64"
+          },
+          {
+            "name": "points_earned",
+            "type": "u64"
+          },
+          {
+            "name": "total_points",
+            "type": "u64"
+          },
+          {
+            "name": "current_streak",
+            "type": "u32"
+          },
+          {
+            "name": "tx_signature",
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VoterRegistered",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "voter",
+            "type": "pubkey"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: #fffdf5;
+    color: #111111;
+  }
+}
+
+/* Grid background pattern */
+.bg-grid {
+  background-size: 40px 40px;
+  background-image:
+    linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+}
+
+/* Neo-brutalist hard shadows */
+.shadow-neo-sm {
+  box-shadow: 3px 3px 0px 0px #000000;
+}
+.shadow-neo {
+  box-shadow: 5px 5px 0px 0px #000000;
+}
+.shadow-neo-lg {
+  box-shadow: 8px 8px 0px 0px #000000;
+}
+
+/* Button hover: shift into shadow */
+.neo-btn {
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.1s ease;
+  display: inline-block;
+}
+.neo-btn:hover {
+  transform: translate(2px, 2px);
+  box-shadow: none !important;
+}
+.neo-btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: none !important;
+}
+
+/* Marquee animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  animation: marquee 18s linear infinite;
+}
+
+/* Pulse dot */
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+.pulse-dot {
+  animation: pulse-dot 1.2s ease-in-out infinite;
+}
+
+.font-display {
+  font-family: var(--font-display, "Space Grotesk", sans-serif);
+}

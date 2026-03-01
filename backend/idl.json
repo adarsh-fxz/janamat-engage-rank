@@ -1,0 +1,1019 @@
+{
+    "accounts": [
+        {
+            "discriminator": [
+                110,
+                234,
+                167,
+                188,
+                231,
+                136,
+                153,
+                111
+            ],
+            "name": "Poll"
+        },
+        {
+            "discriminator": [
+                104,
+                20,
+                204,
+                252,
+                45,
+                84,
+                37,
+                195
+            ],
+            "name": "VoteReceipt"
+        }
+    ],
+    "address": "4Aqd8QVYvb6xmAzYSFEBnmcD1jJnGTJ86JqK5EWG2KXB",
+    "constants": [
+        {
+            "name": "ADMIN_PUBKEY",
+            "type": "pubkey",
+            "value": "7pWrikN4yMSHJ59Xij9HEVbjiq4h2icvb74XDt8BMkC7"
+        }
+    ],
+    "errors": [
+        {
+            "code": 6000,
+            "msg": "Invalid start time: start time must be in the future",
+            "name": "InvalidStartTime"
+        },
+        {
+            "code": 6001,
+            "msg": "Invalid end time: end time must be after start time",
+            "name": "InvalidEndTime"
+        },
+        {
+            "code": 6002,
+            "msg": "Unauthorized: only the poll authority can perform this action",
+            "name": "Unauthorized"
+        },
+        {
+            "code": 6003,
+            "msg": "Invalid option index: option index is out of bounds",
+            "name": "InvalidOptionIndex"
+        },
+        {
+            "code": 6004,
+            "msg": "Poll already started: cannot add options after poll has started",
+            "name": "PollAlreadyStarted"
+        },
+        {
+            "code": 6005,
+            "msg": "Poll already ended: cannot add options after poll has ended",
+            "name": "PollAlreadyEnded"
+        },
+        {
+            "code": 6006,
+            "msg": "The length of title is too long",
+            "name": "TitleTooLong"
+        },
+        {
+            "code": 6007,
+            "msg": "The length of description is too long",
+            "name": "DescTooLong"
+        },
+        {
+            "code": 6008,
+            "msg": "Option Account Mismatch",
+            "name": "OptionAccountMismatch"
+        },
+        {
+            "code": 6009,
+            "msg": "Poll Is Inactive",
+            "name": "PollIsInactive"
+        },
+        {
+            "code": 6010,
+            "msg": "Option Too Long",
+            "name": "OptionTooLong"
+        },
+        {
+            "code": 6011,
+            "msg": "Cannot Add Option To YesNo",
+            "name": "CannotAddOptionToYesNo"
+        },
+        {
+            "code": 6012,
+            "msg": "Voter has already voted",
+            "name": "AlreadyVoted"
+        },
+        {
+            "code": 6013,
+            "msg": "Overflow",
+            "name": "Overflow"
+        },
+        {
+            "code": 6014,
+            "msg": "Wrong Poll Type",
+            "name": "WrongPollType"
+        },
+        {
+            "code": 6015,
+            "msg": "Duplicate Ranking",
+            "name": "DuplicateRanking"
+        },
+        {
+            "code": 6016,
+            "msg": "Duplicate Selection: cannot select the same option more than once",
+            "name": "DuplicateSelection"
+        },
+        {
+            "code": 6017,
+            "msg": "Cannot Remove Option From YesNo",
+            "name": "CannotRemoveOptionFromYesNo"
+        },
+        {
+            "code": 6018,
+            "msg": "Poll Still Active",
+            "name": "PollStillActive"
+        },
+        {
+            "code": 6019,
+            "msg": "Invalid Account Info",
+            "name": "InvalidAccountInfo"
+        },
+        {
+            "code": 6020,
+            "msg": "Poll Not Started",
+            "name": "PollNotStarted"
+        },
+        {
+            "code": 6021,
+            "msg": "Minimum Options Required",
+            "name": "MinimumOptionsRequired"
+        },
+        {
+            "code": 6022,
+            "msg": "Too Many Options",
+            "name": "TooManyOptions"
+        },
+        {
+            "code": 6023,
+            "msg": "Too Many Selections",
+            "name": "TooManySelections"
+        }
+    ],
+    "events": [
+        {
+            "discriminator": [
+                136,
+                202,
+                18,
+                117,
+                144,
+                187,
+                122,
+                249
+            ],
+            "name": "OptionAdded"
+        },
+        {
+            "discriminator": [
+                110,
+                36,
+                10,
+                10,
+                152,
+                110,
+                150,
+                120
+            ],
+            "name": "OptionRemoved"
+        },
+        {
+            "discriminator": [
+                137,
+                85,
+                250,
+                148,
+                2,
+                9,
+                178,
+                39
+            ],
+            "name": "PollCreated"
+        },
+        {
+            "discriminator": [
+                204,
+                130,
+                193,
+                200,
+                209,
+                80,
+                98,
+                27
+            ],
+            "name": "PollUpdated"
+        },
+        {
+            "discriminator": [
+                182,
+                64,
+                35,
+                84,
+                146,
+                134,
+                82,
+                23
+            ],
+            "name": "PollsClosed"
+        },
+        {
+            "discriminator": [
+                156,
+                98,
+                66,
+                40,
+                149,
+                79,
+                255,
+                51
+            ],
+            "name": "VoteCasted"
+        },
+        {
+            "discriminator": [
+                190,
+                199,
+                1,
+                103,
+                155,
+                213,
+                8,
+                185
+            ],
+            "name": "VotesClosed"
+        }
+    ],
+    "instructions": [
+        {
+            "accounts": [
+                {
+                    "address": "7pWrikN4yMSHJ59Xij9HEVbjiq4h2icvb74XDt8BMkC7",
+                    "name": "admin",
+                    "signer": true,
+                    "writable": true
+                },
+                {
+                    "name": "poll",
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const",
+                                "value": [
+                                    112,
+                                    111,
+                                    108,
+                                    108
+                                ]
+                            },
+                            {
+                                "kind": "arg",
+                                "path": "poll_idx"
+                            }
+                        ]
+                    },
+                    "writable": true
+                }
+            ],
+            "args": [
+                {
+                    "name": "poll_idx",
+                    "type": "u64"
+                },
+                {
+                    "name": "new_option",
+                    "type": "string"
+                }
+            ],
+            "discriminator": [
+                229,
+                150,
+                102,
+                127,
+                99,
+                5,
+                34,
+                196
+            ],
+            "name": "add_option"
+        },
+        {
+            "accounts": [
+                {
+                    "name": "voter",
+                    "signer": true
+                },
+                {
+                    "address": "7pWrikN4yMSHJ59Xij9HEVbjiq4h2icvb74XDt8BMkC7",
+                    "name": "admin",
+                    "writable": true
+                },
+                {
+                    "name": "poll",
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const",
+                                "value": [
+                                    112,
+                                    111,
+                                    108,
+                                    108
+                                ]
+                            },
+                            {
+                                "kind": "arg",
+                                "path": "poll_idx"
+                            }
+                        ]
+                    },
+                    "writable": true
+                },
+                {
+                    "name": "vote_receipt",
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const",
+                                "value": [
+                                    118,
+                                    111,
+                                    116,
+                                    101,
+                                    95,
+                                    114,
+                                    101,
+                                    99,
+                                    101,
+                                    105,
+                                    112,
+                                    116
+                                ]
+                            },
+                            {
+                                "kind": "account",
+                                "path": "voter"
+                            },
+                            {
+                                "kind": "account",
+                                "path": "poll"
+                            }
+                        ]
+                    },
+                    "writable": true
+                },
+                {
+                    "address": "11111111111111111111111111111111",
+                    "name": "system_program"
+                }
+            ],
+            "args": [
+                {
+                    "name": "poll_idx",
+                    "type": "u64"
+                },
+                {
+                    "name": "vote_data",
+                    "type": {
+                        "defined": {
+                            "name": "VoteData"
+                        }
+                    }
+                }
+            ],
+            "discriminator": [
+                20,
+                212,
+                15,
+                189,
+                69,
+                180,
+                69,
+                151
+            ],
+            "name": "cast_vote"
+        },
+        {
+            "accounts": [
+                {
+                    "address": "7pWrikN4yMSHJ59Xij9HEVbjiq4h2icvb74XDt8BMkC7",
+                    "name": "admin",
+                    "signer": true,
+                    "writable": true
+                },
+                {
+                    "name": "rent_collector",
+                    "writable": true
+                }
+            ],
+            "args": [],
+            "discriminator": [
+                124,
+                98,
+                83,
+                155,
+                243,
+                121,
+                254,
+                18
+            ],
+            "name": "close_polls"
+        },
+        {
+            "accounts": [
+                {
+                    "address": "7pWrikN4yMSHJ59Xij9HEVbjiq4h2icvb74XDt8BMkC7",
+                    "name": "admin",
+                    "signer": true,
+                    "writable": true
+                },
+                {
+                    "name": "rent_collector",
+                    "writable": true
+                }
+            ],
+            "args": [],
+            "discriminator": [
+                57,
+                31,
+                5,
+                35,
+                47,
+                250,
+                217,
+                51
+            ],
+            "name": "close_votes"
+        },
+        {
+            "accounts": [
+                {
+                    "address": "7pWrikN4yMSHJ59Xij9HEVbjiq4h2icvb74XDt8BMkC7",
+                    "name": "admin",
+                    "signer": true,
+                    "writable": true
+                },
+                {
+                    "name": "poll",
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const",
+                                "value": [
+                                    112,
+                                    111,
+                                    108,
+                                    108
+                                ]
+                            },
+                            {
+                                "kind": "arg",
+                                "path": "poll_idx"
+                            }
+                        ]
+                    },
+                    "writable": true
+                },
+                {
+                    "address": "11111111111111111111111111111111",
+                    "name": "system_program"
+                }
+            ],
+            "args": [
+                {
+                    "name": "poll_idx",
+                    "type": "u64"
+                },
+                {
+                    "name": "start_time",
+                    "type": "i64"
+                },
+                {
+                    "name": "end_time",
+                    "type": "i64"
+                },
+                {
+                    "name": "title",
+                    "type": "string"
+                },
+                {
+                    "name": "desc",
+                    "type": "string"
+                },
+                {
+                    "name": "options",
+                    "type": {
+                        "vec": "string"
+                    }
+                },
+                {
+                    "name": "poll_type",
+                    "type": {
+                        "defined": {
+                            "name": "PollType"
+                        }
+                    }
+                }
+            ],
+            "discriminator": [
+                125,
+                33,
+                167,
+                77,
+                242,
+                214,
+                203,
+                107
+            ],
+            "name": "init_poll"
+        },
+        {
+            "accounts": [
+                {
+                    "address": "7pWrikN4yMSHJ59Xij9HEVbjiq4h2icvb74XDt8BMkC7",
+                    "name": "admin",
+                    "signer": true,
+                    "writable": true
+                },
+                {
+                    "name": "poll",
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const",
+                                "value": [
+                                    112,
+                                    111,
+                                    108,
+                                    108
+                                ]
+                            },
+                            {
+                                "kind": "arg",
+                                "path": "poll_idx"
+                            }
+                        ]
+                    },
+                    "writable": true
+                }
+            ],
+            "args": [
+                {
+                    "name": "poll_idx",
+                    "type": "u64"
+                },
+                {
+                    "name": "option_idx",
+                    "type": "u8"
+                }
+            ],
+            "discriminator": [
+                224,
+                34,
+                48,
+                108,
+                203,
+                248,
+                228,
+                213
+            ],
+            "name": "remove_option"
+        },
+        {
+            "accounts": [
+                {
+                    "address": "7pWrikN4yMSHJ59Xij9HEVbjiq4h2icvb74XDt8BMkC7",
+                    "name": "admin",
+                    "signer": true,
+                    "writable": true
+                },
+                {
+                    "name": "poll",
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const",
+                                "value": [
+                                    112,
+                                    111,
+                                    108,
+                                    108
+                                ]
+                            },
+                            {
+                                "kind": "arg",
+                                "path": "poll_idx"
+                            }
+                        ]
+                    },
+                    "writable": true
+                }
+            ],
+            "args": [
+                {
+                    "name": "poll_idx",
+                    "type": "u64"
+                },
+                {
+                    "name": "args",
+                    "type": {
+                        "defined": {
+                            "name": "UpdateArgs"
+                        }
+                    }
+                }
+            ],
+            "discriminator": [
+                188,
+                131,
+                217,
+                106,
+                140,
+                114,
+                130,
+                5
+            ],
+            "name": "update_poll"
+        }
+    ],
+    "metadata": {
+        "description": "Created with Anchor",
+        "name": "vote_program",
+        "spec": "0.1.0",
+        "version": "0.1.0"
+    },
+    "types": [
+        {
+            "name": "OptionAdded",
+            "type": {
+                "fields": [
+                    {
+                        "name": "poll_idx",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "new_option",
+                        "type": "string"
+                    }
+                ],
+                "kind": "struct"
+            }
+        },
+        {
+            "name": "OptionRemoved",
+            "type": {
+                "fields": [
+                    {
+                        "name": "poll_idx",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "option_idx",
+                        "type": "u8"
+                    }
+                ],
+                "kind": "struct"
+            }
+        },
+        {
+            "name": "Poll",
+            "type": {
+                "fields": [
+                    {
+                        "name": "admin",
+                        "type": "pubkey"
+                    },
+                    {
+                        "name": "poll_idx",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "start_time",
+                        "type": "i64"
+                    },
+                    {
+                        "name": "end_time",
+                        "type": "i64"
+                    },
+                    {
+                        "name": "title",
+                        "type": "string"
+                    },
+                    {
+                        "name": "desc",
+                        "type": "string"
+                    },
+                    {
+                        "name": "options",
+                        "type": {
+                            "vec": "string"
+                        }
+                    },
+                    {
+                        "name": "poll_config",
+                        "type": {
+                            "defined": {
+                                "name": "PollConfig"
+                            }
+                        }
+                    },
+                    {
+                        "name": "total_votes",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "bool"
+                    },
+                    {
+                        "name": "poll_type",
+                        "type": {
+                            "defined": {
+                                "name": "PollType"
+                            }
+                        }
+                    }
+                ],
+                "kind": "struct"
+            }
+        },
+        {
+            "name": "PollConfig",
+            "type": {
+                "kind": "enum",
+                "variants": [
+                    {
+                        "fields": [
+                            {
+                                "name": "yes",
+                                "type": "u64"
+                            },
+                            {
+                                "name": "no",
+                                "type": "u64"
+                            }
+                        ],
+                        "name": "YesNo"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "name": "votes",
+                                "type": {
+                                    "vec": "u64"
+                                }
+                            }
+                        ],
+                        "name": "SingleChoice"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "name": "points",
+                                "type": {
+                                    "vec": "u64"
+                                }
+                            }
+                        ],
+                        "name": "Ranked"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "name": "votes",
+                                "type": {
+                                    "vec": "u64"
+                                }
+                            }
+                        ],
+                        "name": "MultipleChoice"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "PollCreated",
+            "type": {
+                "fields": [
+                    {
+                        "name": "poll_idx",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "title",
+                        "type": "string"
+                    },
+                    {
+                        "name": "desc",
+                        "type": "string"
+                    },
+                    {
+                        "name": "start_time",
+                        "type": "i64"
+                    },
+                    {
+                        "name": "end_time",
+                        "type": "i64"
+                    },
+                    {
+                        "name": "poll_type",
+                        "type": {
+                            "defined": {
+                                "name": "PollType"
+                            }
+                        }
+                    }
+                ],
+                "kind": "struct"
+            }
+        },
+        {
+            "name": "PollType",
+            "type": {
+                "kind": "enum",
+                "variants": [
+                    {
+                        "name": "YesNo"
+                    },
+                    {
+                        "name": "SingleChoice"
+                    },
+                    {
+                        "name": "Ranked"
+                    },
+                    {
+                        "name": "MultipleChoice"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "PollUpdated",
+            "type": {
+                "fields": [
+                    {
+                        "name": "poll_idx",
+                        "type": "u64"
+                    }
+                ],
+                "kind": "struct"
+            }
+        },
+        {
+            "name": "PollsClosed",
+            "type": {
+                "fields": [
+                    {
+                        "name": "rent_collector",
+                        "type": "pubkey"
+                    }
+                ],
+                "kind": "struct"
+            }
+        },
+        {
+            "name": "UpdateArgs",
+            "type": {
+                "fields": [
+                    {
+                        "name": "title",
+                        "type": {
+                            "option": "string"
+                        }
+                    },
+                    {
+                        "name": "desc",
+                        "type": {
+                            "option": "string"
+                        }
+                    },
+                    {
+                        "name": "start_time",
+                        "type": {
+                            "option": "i64"
+                        }
+                    },
+                    {
+                        "name": "end_time",
+                        "type": {
+                            "option": "i64"
+                        }
+                    },
+                    {
+                        "name": "is_active",
+                        "type": {
+                            "option": "bool"
+                        }
+                    }
+                ],
+                "kind": "struct"
+            }
+        },
+        {
+            "name": "VoteCasted",
+            "type": {
+                "fields": [
+                    {
+                        "name": "poll_idx",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "voter",
+                        "type": "pubkey"
+                    },
+                    {
+                        "name": "vote_data",
+                        "type": {
+                            "defined": {
+                                "name": "VoteData"
+                            }
+                        }
+                    }
+                ],
+                "kind": "struct"
+            }
+        },
+        {
+            "name": "VoteData",
+            "type": {
+                "kind": "enum",
+                "variants": [
+                    {
+                        "fields": [
+                            {
+                                "name": "choice",
+                                "type": "bool"
+                            }
+                        ],
+                        "name": "YesNo"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "name": "index",
+                                "type": "u8"
+                            }
+                        ],
+                        "name": "SingleChoice"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "name": "ranking",
+                                "type": "bytes"
+                            }
+                        ],
+                        "name": "Ranked"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "name": "indices",
+                                "type": "bytes"
+                            }
+                        ],
+                        "name": "MultipleChoice"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "VoteReceipt",
+            "type": {
+                "fields": [
+                    {
+                        "name": "poll",
+                        "type": "pubkey"
+                    },
+                    {
+                        "name": "voter",
+                        "type": "pubkey"
+                    },
+                    {
+                        "name": "timestamp",
+                        "type": "i64"
+                    }
+                ],
+                "kind": "struct"
+            }
+        },
+        {
+            "name": "VotesClosed",
+            "type": {
+                "fields": [
+                    {
+                        "name": "rent_collector",
+                        "type": "pubkey"
+                    }
+                ],
+                "kind": "struct"
+            }
+        }
+    ]
+}
