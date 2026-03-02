@@ -3,6 +3,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import { rateLimit } from "express-rate-limit";
 import { startSolanaListener } from "./solanaListener.js";
 import { initializeIfNeeded } from "./engageService.js";
 import { getOnChainLeaderboard, getGlobalStats, getVoterProfile } from "./queries.js";
@@ -11,6 +12,15 @@ import { recordReferral, getReferralStats, getReferredBy } from "./referralServi
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Rate limit POST /referral/register to prevent flood, file bloat, and enumeration.
+const referralRegisterLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 15,
+  message: { error: "Too many referral attempts. Try again later." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 app.get("/leaderboard", async (req, res) => {
   try {
@@ -50,7 +60,7 @@ app.get("/profile/:address", async (req, res) => {
 });
 
 // Called by janamat.app after a new user signs in to record the referral link.
-app.post("/referral/register", async (req, res) => {
+app.post("/referral/register", referralRegisterLimiter, async (req, res) => {
   try {
     const { referee, referrer } = req.body as { referee?: string; referrer?: string };
     if (!referee || !referrer) {

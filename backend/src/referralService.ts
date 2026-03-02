@@ -71,13 +71,7 @@ export function recordReferral(
   const referrals = loadReferrals();
 
   if (referrals[referee]) {
-    return {
-      ok: false,
-      reason:
-        referrals[referee] === referrer
-          ? "Already attributed to you"
-          : "Referee already attributed to another referrer",
-    };
+    return { ok: false, reason: "Referee already attributed." };
   }
 
   referrals[referee] = referrer;
