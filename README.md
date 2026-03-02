@@ -1,4 +1,4 @@
-# Janamat Engage Ranking
+# Janamat Engage Rank
 
 A gamified civic engagement layer on top of [janamat.app](https://janamat.app).
 Every vote cast on Janamat earns on-chain points tracked by an Anchor program on Solana devnet.
@@ -22,7 +22,7 @@ Built for the Superteam Earn Mini Hack.
 ## Project Structure
 
 ```
-janamat-engagement/
+janamat-engage-rank/
   backend/              Express API server + Solana event listener
   engage_registry/      Anchor (Rust) program deployed on Solana devnet
   frontend/             Next.js frontend
