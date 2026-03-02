@@ -1,6 +1,9 @@
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
-// ── Leaderboard (sourced from on-chain EngageProfile accounts) ───────────────
+// Message shown when backend returns 429 (rate limit).
+export const RATE_LIMIT_MESSAGE = "Too many requests. Try again later.";
+
+// Leaderboard (sourced from on-chain EngageProfile accounts)
 export interface LeaderboardEntry {
   voter: string;
   points: number;
@@ -14,11 +17,12 @@ export async function fetchLeaderboard(limit = 20): Promise<LeaderboardEntry[]> 
   const res = await fetch(`${API_BASE}/leaderboard?limit=${limit}`, {
     next: { revalidate: 30 },
   });
+  if (res.status === 429) throw new Error(RATE_LIMIT_MESSAGE);
   if (!res.ok) throw new Error("Failed to fetch leaderboard");
   return res.json();
 }
 
-// ── Global stats (sourced from on-chain GlobalState PDA) ─────────────────────
+// Global stats (sourced from on-chain GlobalState PDA)
 export interface GlobalStats {
   totalVoters: number;
   totalVotesRecorded: number;
@@ -30,14 +34,14 @@ export async function fetchGlobalStats(): Promise<GlobalStats | null> {
     const res = await fetch(`${API_BASE}/stats`, {
       next: { revalidate: 60 },
     });
-    if (!res.ok) return null;
+    if (res.status === 429 || !res.ok) return null;
     return res.json();
   } catch {
     return null;
   }
 }
 
-// ── Individual voter profile ──────────────────────────────────────────────────
+// Individual voter profile
 export async function fetchVoterProfile(
   address: string
 ): Promise<LeaderboardEntry | null> {
@@ -45,14 +49,14 @@ export async function fetchVoterProfile(
     const res = await fetch(`${API_BASE}/profile/${address}`, {
       next: { revalidate: 30 },
     });
-    if (!res.ok) return null;
+    if (res.status === 429 || !res.ok) return null;
     return res.json();
   } catch {
     return null;
   }
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// Helpers
 export function truncateAddress(address: string, chars = 4): string {
   if (!address || address.length < chars * 2 + 3) return address;
   return `${address.slice(0, chars)}...${address.slice(-chars)}`;

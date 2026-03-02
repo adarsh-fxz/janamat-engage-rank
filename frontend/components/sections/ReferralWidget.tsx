@@ -28,6 +28,10 @@ export function ReferralWidget() {
     setLoading(true);
     try {
       const res = await fetch(`${API_BASE}/referral/stats/${addr}`);
+      if (res.status === 429) {
+        setError("Too many requests. Try again in a minute.");
+        return;
+      }
       if (!res.ok) throw new Error("Could not fetch stats");
       const data = await res.json();
       setStats(data);

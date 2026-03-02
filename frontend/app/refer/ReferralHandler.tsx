@@ -47,8 +47,13 @@ export function ReferralHandler({ referrer }: { referrer: string }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ referee: knownWallet, referrer }),
     })
-      .then((r) => r.json())
-      .then((data) => {
+      .then(async (r) => {
+        const data = await r.json().catch(() => ({}));
+        if (r.status === 429) {
+          setStatus("skipped");
+          setMessage(data.error || "Too many attempts. Try again in a minute.");
+          return;
+        }
         if (data.success) {
           setStatus("success");
           setMessage("Referral recorded! Your referrer earned a point.");

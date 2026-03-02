@@ -1,6 +1,7 @@
 import {
   fetchLeaderboard,
   fetchGlobalStats,
+  RATE_LIMIT_MESSAGE,
   type LeaderboardEntry,
 } from "@/lib/api";
 import { truncateAddress, formatPoints, streakLabel } from "@/lib/api";
@@ -29,6 +30,7 @@ function getTier(points: number): { label: string; bg: string } {
 export default async function LeaderboardPage() {
   let entries: LeaderboardEntry[] = [];
   let error = false;
+  let rateLimited = false;
   let stats = null;
 
   try {
@@ -36,8 +38,9 @@ export default async function LeaderboardPage() {
       fetchLeaderboard(100),
       fetchGlobalStats(),
     ]);
-  } catch {
+  } catch (e) {
     error = true;
+    rateLimited = e instanceof Error && e.message === RATE_LIMIT_MESSAGE;
   }
 
   const top3 = entries.slice(0, 3);
@@ -116,14 +119,20 @@ export default async function LeaderboardPage() {
             <span className="text-2xl">⚠️</span>
             <div>
               <p className="font-display font-extrabold uppercase text-base mb-1">
-                Backend Offline
+                {rateLimited ? "Too Many Requests" : "Backend Offline"}
               </p>
               <p className="font-medium text-sm text-black/70">
-                Could not load data. Make sure the backend is running at{" "}
-                <code className="font-mono bg-[#EAB308] border border-black px-1">
-                  localhost:4000
-                </code>
-                .
+                {rateLimited
+                  ? "You've hit the rate limit. Please wait a minute and refresh."
+                  : (
+                      <>
+                        Could not load data. Make sure the backend is running at{" "}
+                        <code className="font-mono bg-[#EAB308] border border-black px-1">
+                          localhost:4000
+                        </code>
+                        .
+                      </>
+                    )}
               </p>
             </div>
           </div>
