@@ -10,7 +10,13 @@ import { getOnChainLeaderboard, getGlobalStats, getVoterProfile } from "./querie
 import { recordReferral, getReferralStats, getReferredBy } from "./referralService.js";
 
 const app = express();
-app.use(cors());
+
+// CORS: only allow these origins
+const origins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",").map((s) => s.trim()).filter(Boolean)
+  : ["http://localhost:3000", "http://127.0.0.1:3000"];
+
+app.use(cors({ origin: origins }));
 app.use(express.json());
 app.use(globalLimiter);
 

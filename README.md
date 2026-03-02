@@ -117,6 +117,7 @@ Frontend runs at `http://localhost:3000`.
 
 ```
 NEXT_PUBLIC_API_URL=http://localhost:4000
+ALLOWED_ORIGINS=http://localhost:3000
 ```
 
 ---
