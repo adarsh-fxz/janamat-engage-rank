@@ -1,6 +1,6 @@
 // Referral tracking: record links, enforce daily cap, award points on first vote.
 
-import { readFileSync, writeFileSync, existsSync } from "fs";
+import { readFileSync, writeFileSync, existsSync, renameSync } from "fs";
 import path from "path";
 import { PublicKey } from "@solana/web3.js";
 import { awardEngagePoints } from "./engageService.js";
@@ -15,13 +15,17 @@ function loadJson(filePath: string): Record<string, string | number> {
   if (!existsSync(filePath)) return {};
   try {
     return JSON.parse(readFileSync(filePath, "utf8"));
-  } catch {
-    return {};
+  } catch (err) {
+    console.error(`[referral] corrupted or invalid JSON: ${filePath}`, err);
+    throw err;
   }
 }
 
+// write to .tmp then rename, so crash mid-write does not corrupt the file.
 function saveJson(filePath: string, data: object): void {
-  writeFileSync(filePath, JSON.stringify(data, null, 2));
+  const tmpPath = `${filePath}.tmp`;
+  writeFileSync(tmpPath, JSON.stringify(data, null, 2));
+  renameSync(tmpPath, filePath);
 }
 
 function loadReferrals(): Record<string, string> {
