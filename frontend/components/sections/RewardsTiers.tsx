@@ -15,7 +15,7 @@ const tiers = [
   },
   {
     icon: "🧥",
-    name: "Nepal Hoodie",
+    name: "Superteam Nepal Hoodie",
     range: "200 pts",
     perks: [
       "Superteam Nepal hoodie",
@@ -29,7 +29,7 @@ const tiers = [
   },
   {
     icon: "🏅",
-    name: "Civic NFT",
+    name: "On-Chain Civic NFT",
     range: "500 pts",
     perks: [
       "Soulbound NFT on Solana",
