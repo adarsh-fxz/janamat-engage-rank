@@ -97,8 +97,9 @@ app.get("/health", (_req, res) => {
 });
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, async () => {
-  console.log(`Backend running at http://localhost:${PORT}`);
+const host = '0.0.0.0';
+app.listen(Number(PORT), host, async () => {
+  console.log(`Backend running at http://${host}:${PORT}`);
   await initializeIfNeeded();
   startSolanaListener();
 });
