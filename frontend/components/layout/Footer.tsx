@@ -13,7 +13,7 @@ export function Footer() {
                 J
               </div>
               <span className="font-display font-extrabold text-xl uppercase tracking-tighter text-black">
-                JANAMAT<span className="text-[#FF8A00]">.</span>EARN
+                JANAMAT ENGAGE RANK
               </span>
             </Link>
             <p className="font-medium text-black/70 max-w-xs leading-relaxed text-sm mb-5">
@@ -95,7 +95,7 @@ export function Footer() {
         {/* Bottom */}
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="font-display font-bold text-sm text-black/50 uppercase">
-            © 2026 Janamat Engage Ranking. Built for Superteam Earn Mini Hack.
+            © 2026 Janamat Engage Rank. Built for Superteam Earn Mini Hack.
           </p>
           <p className="font-display font-bold text-sm text-black/50 uppercase">
             On-Chain Votes. Real Civic Impact.
