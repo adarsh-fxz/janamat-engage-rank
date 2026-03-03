@@ -30,6 +30,56 @@ janamat-engage-rank/
 
 ---
 
+## Architecture Overview
+
+At a high level, Janamat Engage Rank sits between `janamat.app`, Solana, and the user-facing leaderboard.
+
+```mermaid
+flowchart TD
+    subgraph Janamat["janamat.app"]
+        A[User casts a vote]
+    end
+
+    subgraph Solana["Solana Devnet"]
+        B[vote_program]
+        D[engage_registry program]
+        D1[GlobalState account]
+        D2[EngageProfile account]
+    end
+
+    subgraph Backend["Backend - Express + TypeScript"]
+        C[Event Listener]
+        E[REST API]
+        F[Referral JSON store]
+    end
+
+    subgraph Frontend["Frontend - Next.js"]
+        G[Leaderboard]
+        H[Profile view]
+        I[Referral view]
+    end
+
+    A -->|on-chain tx| B
+    B -->|VoteCasted event| C
+    C -->|award_points ix| D
+    D --- D1
+    D --- D2
+    D -->|on-chain reads| E
+    F -->|referral data| E
+    E -->|REST JSON| G
+    E -->|REST JSON| H
+    E -->|REST JSON| I
+```
+
+**Key responsibilities:**
+
+- **Solana / `vote_program`**: Emits `VoteCasted` events when users vote on janamat.app.
+- **`engage_registry` program**: Owns all on-chain `GlobalState` and `EngageProfile` accounts, enforces streak logic, referral limits, and write permissions.
+- **Backend**: Listens to Solana events, translates them into `engage_registry` instructions, exposes a REST API, and maintains referral helper JSON files.
+- **Frontend**: Displays the leaderboard, profile and stats views, and referral information using the backend API.
+
+---
+
 ## How Points Work
 
 | Action                          | Points earned                   |
@@ -195,6 +245,32 @@ anchor test
 | Frontend       | Next.js 16.1 (App Router), React 19.2, Tailwind CSS v4                                   |
 | Font           | Space Grotesk                                                                            |
 | Chain          | Solana Devnet                                                                            |
+
+---
+
+## Future Enhancements
+
+These are ideas that build on the current architecture and would likely come in future iterations:
+
+- **Dedicated indexer / history service**
+  - Maintain a full history of votes, point changes, and referrals in an indexer (e.g. a lightweight DB or Solana indexing service).
+  - Enable richer analytics (per-poll stats, historical leaderboards, time-series charts, etc.).
+  - Make it easier to recompute or audit point totals off-chain if needed.
+
+- **Deeper integration with Janamat APIs**
+  - If `janamat.app` exposes APIs for **comments**, **poll outcomes/wins**, and **referrals**, we can cross-verify on-chain events with Janamat’s source-of-truth.
+  - Use comments and poll wins to unlock **engagement-based achievements** (e.g. “Top Commenter”, “Prediction Master”, “Debate Champion”).
+  - Confirm referrals directly from Janamat’s backend to reduce fraud and reconcile discrepancies between on-chain and off-chain data.
+
+- **Richer gamification**
+  - Badge system for streaks, prediction accuracy, and community roles.
+  - Seasonal or campaign-based leaderboards (e.g. monthly/quarterly resets with prizes).
+  - Teams / communities with shared point pools and team-based rewards.
+
+- **Productization & ecosystem hooks**
+  - Public APIs/SDKs so other apps or DAOs can embed the Engage Rank leaderboard or award points for their own actions.
+  - Webhooks for downstream integrations (Discord roles, Telegram bots, custom dashboards).
+  - Optional support for mainnet or additional Solana clusters if Janamat moves beyond devnet.
 
 ---
 
