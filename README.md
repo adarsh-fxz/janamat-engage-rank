@@ -99,6 +99,9 @@ The backend starts at `http://localhost:4000` and immediately:
 ```
 SOLANA_RPC_URL=https://api.devnet.solana.com
 PORT=4000
+# Paste keypair JSON from id.json directly
+# AUTHORITY_KEYPAIR_JSON="[1,2,3,...]"
+# or use a file path:
 # AUTHORITY_KEYPAIR_PATH=/path/to/keypair.json  (defaults to ~/.config/solana/id.json)
 ```
 
@@ -117,7 +120,7 @@ Frontend runs at `http://localhost:3000`.
 
 ```
 NEXT_PUBLIC_API_URL=http://localhost:4000
-ALLOWED_ORIGINS=http://localhost:3000
+ALLOWED_ORIGINS=http://localhost:4000
 ```
 
 ---

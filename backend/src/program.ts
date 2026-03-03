@@ -27,12 +27,19 @@ export function getProgram(): {
     return { program: _program, authority: _authority, connection: _connection };
   }
 
-  const keypairPath =
-    process.env.AUTHORITY_KEYPAIR_PATH ||
-    `${process.env.HOME}/.config/solana/id.json`;
-  const authority = Keypair.fromSecretKey(
-    Uint8Array.from(JSON.parse(readFileSync(keypairPath, "utf8"))),
-  );
+  const keypairBytes = (() => {
+    const json = process.env.AUTHORITY_KEYPAIR_JSON;
+    if (json) {
+      return Uint8Array.from(JSON.parse(json) as number[]);
+    }
+    const keypairPath =
+      process.env.AUTHORITY_KEYPAIR_PATH ||
+      `${process.env.HOME}/.config/solana/id.json`;
+    return Uint8Array.from(
+      JSON.parse(readFileSync(keypairPath, "utf8")) as number[],
+    );
+  })();
+  const authority = Keypair.fromSecretKey(keypairBytes);
 
   const connection = new Connection(RPC_URL, "confirmed");
   const provider = new anchor.AnchorProvider(
