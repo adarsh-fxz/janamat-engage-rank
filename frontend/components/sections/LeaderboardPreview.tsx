@@ -11,6 +11,29 @@ const rankBg = [
   "bg-white text-black",
 ];
 
+function formatLastVoted(lastVoteTimestamp: number): string {
+  if (!lastVoteTimestamp) return "No votes yet";
+
+  const nowMs = Date.now();
+  const voteMs = lastVoteTimestamp * 1000;
+  const diffSeconds = Math.max(0, Math.floor((nowMs - voteMs) / 1000));
+
+  if (diffSeconds < 60) return "Just now";
+
+  const minutes = Math.floor(diffSeconds / 60);
+  if (minutes < 60) {
+    return `${minutes} min${minutes === 1 ? "" : "s"} ago`;
+  }
+
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) {
+    return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+  }
+
+  const days = Math.floor(hours / 24);
+  return `${days} day${days === 1 ? "" : "s"} ago`;
+}
+
 export async function LeaderboardPreview() {
   let entries: LeaderboardEntry[] = [];
   try {
@@ -19,7 +42,10 @@ export async function LeaderboardPreview() {
     /* show empty */
   }
 
-  const top5 = entries.slice(0, 5);
+  const sortedByRecent = [...entries].sort(
+    (a, b) => b.lastVoteTimestamp - a.lastVoteTimestamp
+  );
+  const top5 = sortedByRecent.slice(0, 5);
   const maxPoints = top5[0]?.points || 1;
 
   return (
@@ -90,6 +116,7 @@ export async function LeaderboardPreview() {
               {top5.map((entry, i) => {
                 const pct = Math.round((entry.points / maxPoints) * 100);
                 const sl = streakLabel(entry.currentStreak);
+                const lastVoted = formatLastVoted(entry.lastVoteTimestamp);
                 return (
                   <div
                     key={entry.voter}
@@ -120,6 +147,9 @@ export async function LeaderboardPreview() {
                           className="bg-[#EA580C] h-full border-r border-black"
                           style={{ width: `${pct}%` }}
                         />
+                      </div>
+                      <div className="mt-0.5 font-display text-[11px] text-black/50">
+                        Last vote · {lastVoted}
                       </div>
                     </div>
 

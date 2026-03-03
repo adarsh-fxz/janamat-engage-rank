@@ -27,6 +27,29 @@ function getTier(points: number): { label: string; bg: string } {
   return { label: "Newcomer", bg: "bg-white" };
 }
 
+function formatLastVoted(lastVoteTimestamp: number): string {
+  if (!lastVoteTimestamp) return "No votes yet";
+
+  const nowMs = Date.now();
+  const voteMs = lastVoteTimestamp * 1000;
+  const diffSeconds = Math.max(0, Math.floor((nowMs - voteMs) / 1000));
+
+  if (diffSeconds < 60) return "Just now";
+
+  const minutes = Math.floor(diffSeconds / 60);
+  if (minutes < 60) {
+    return `${minutes} min${minutes === 1 ? "" : "s"} ago`;
+  }
+
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) {
+    return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+  }
+
+  const days = Math.floor(hours / 24);
+  return `${days} day${days === 1 ? "" : "s"} ago`;
+}
+
 export default async function LeaderboardPage() {
   let entries: LeaderboardEntry[] = [];
   let error = false;
@@ -43,8 +66,11 @@ export default async function LeaderboardPage() {
     rateLimited = e instanceof Error && e.message === RATE_LIMIT_MESSAGE;
   }
 
-  const top3 = entries.slice(0, 3);
-  const rest = entries.slice(3);
+  const sortedByRecent = [...entries].sort(
+    (a, b) => b.lastVoteTimestamp - a.lastVoteTimestamp
+  );
+  const top3 = sortedByRecent.slice(0, 3);
+  const recentTop20 = sortedByRecent.slice(0, 20);
   const maxPoints = entries[0]?.points || 1;
   const totalVotesOnChain =
     stats?.totalVotesRecorded ?? entries.reduce((s, e) => s + e.voteCount, 0);
@@ -122,17 +148,17 @@ export default async function LeaderboardPage() {
                 {rateLimited ? "Too Many Requests" : "Backend Offline"}
               </p>
               <p className="font-medium text-sm text-black/70">
-                {rateLimited
-                  ? "You've hit the rate limit. Please wait a minute and refresh."
-                  : (
-                      <>
-                        Could not load data. Make sure the backend is running at{" "}
-                        <code className="font-mono bg-[#EAB308] border border-black px-1">
-                          localhost:4000
-                        </code>
-                        .
-                      </>
-                    )}
+                {rateLimited ? (
+                  "You've hit the rate limit. Please wait a minute and refresh."
+                ) : (
+                  <>
+                    Could not load data. Make sure the backend is running at{" "}
+                    <code className="font-mono bg-[#EAB308] border border-black px-1">
+                      localhost:4000
+                    </code>
+                    .
+                  </>
+                )}
               </p>
             </div>
           </div>
@@ -209,7 +235,7 @@ export default async function LeaderboardPage() {
         )}
 
         {/* Full table */}
-        {entries.length > 0 && (
+        {recentTop20.length > 0 && (
           <div>
             <h2 className="font-display font-extrabold text-2xl uppercase mb-6 flex items-center gap-2 text-black">
               <span>📊</span> Full Rankings
@@ -241,9 +267,10 @@ export default async function LeaderboardPage() {
                 </div>
               </div>
 
-              {entries.map((entry, i) => {
+              {recentTop20.map((entry, i) => {
                 const pct = Math.round((entry.points / maxPoints) * 100);
                 const sl = streakLabel(entry.currentStreak);
+                const lastVoted = formatLastVoted(entry.lastVoteTimestamp);
 
                 return (
                   <div
@@ -273,6 +300,9 @@ export default async function LeaderboardPage() {
                           className="bg-[#EA580C] h-full border-r border-black"
                           style={{ width: `${pct}%` }}
                         />
+                      </div>
+                      <div className="mt-1 font-display text-[11px] text-black/50">
+                        Last vote · {lastVoted}
                       </div>
                     </div>
 
