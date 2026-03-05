@@ -5,9 +5,13 @@ export async function StatsBar() {
   let totalVotes = 0;
 
   try {
-    const [stats, data] = await Promise.all([fetchGlobalStats(), fetchLeaderboard()]);
+    const [stats, data] = await Promise.all([
+      fetchGlobalStats(),
+      fetchLeaderboard(),
+    ]);
     totalVoters = stats?.totalVoters ?? data.length;
-    totalVotes = stats?.totalVotesRecorded ?? data.reduce((s, d) => s + d.voteCount, 0);
+    totalVotes =
+      stats?.totalVotesRecorded ?? data.reduce((s, d) => s + d.voteCount, 0);
   } catch {
     /* silently fail */
   }
