@@ -28,7 +28,7 @@ export default async function LeaderboardPage() {
 
   try {
     [entries, stats] = await Promise.all([
-      fetchLeaderboard(100),
+      fetchLeaderboard(),
       fetchGlobalStats(),
     ]);
   } catch (e) {

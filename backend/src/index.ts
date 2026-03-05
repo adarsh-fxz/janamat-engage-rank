@@ -22,7 +22,7 @@ app.use(globalLimiter);
 
 app.get("/leaderboard", async (req, res) => {
   try {
-    const limit = Math.min(Number(req.query.limit) || 20, 100);
+    const limit = Math.min(Number(req.query.limit) || 20, 10000);
     res.json(await getOnChainLeaderboard(limit));
   } catch (err) {
     console.error("[api] /leaderboard error:", err);

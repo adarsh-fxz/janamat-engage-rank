@@ -21,6 +21,8 @@ function formatLastVoted(lastVoteTimestamp: number): string {
   return `${days} day${days === 1 ? "" : "s"} ago`;
 }
 
+const PAGE_SIZE = 20;
+
 export function FullRankings({
   entries,
   maxPoints,
@@ -30,6 +32,7 @@ export function FullRankings({
 }) {
   const [sort, setSort] = useState<SortMode>("points");
   const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
 
   const sorted = useMemo(() => {
     const base = [...entries];
@@ -38,18 +41,24 @@ export function FullRankings({
     } else {
       base.sort((a, b) => b.lastVoteTimestamp - a.lastVoteTimestamp);
     }
-    return base.slice(0, 20);
+    return base;
   }, [entries, sort]);
+
+  const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
+
+  const pageRows = useMemo(() => {
+    const start = (page - 1) * PAGE_SIZE;
+    return sorted.slice(start, start + PAGE_SIZE);
+  }, [sorted, page]);
 
   const trimmed = query.trim().toLowerCase();
 
-  // If searching, find the specific entry from all entries (not just top 20)
   const searchResult = useMemo(() => {
     if (!trimmed) return null;
     return entries.find((e) => e.voter.toLowerCase().includes(trimmed)) ?? null;
   }, [entries, trimmed]);
 
-  const displayRows = trimmed ? (searchResult ? [searchResult] : []) : sorted;
+  const displayRows = trimmed ? (searchResult ? [searchResult] : []) : pageRows;
 
   // rank of the searched address in the points-sorted full list
   const pointsRanked = useMemo(
@@ -74,7 +83,7 @@ export function FullRankings({
         {/* Sort toggle */}
         <div className="flex items-center gap-0 border-2 border-black overflow-hidden self-start sm:ml-auto">
           <button
-            onClick={() => setSort("points")}
+            onClick={() => { setSort("points"); setPage(1); }}
             className={`px-4 py-2 font-display font-bold text-xs uppercase transition-colors border-r-2 border-black ${
               sort === "points"
                 ? "bg-[#EA580C] text-white"
@@ -84,7 +93,7 @@ export function FullRankings({
             Top Points
           </button>
           <button
-            onClick={() => setSort("recent")}
+            onClick={() => { setSort("recent"); setPage(1); }}
             className={`px-4 py-2 font-display font-bold text-xs uppercase transition-colors ${
               sort === "recent"
                 ? "bg-[#EAB308] text-black"
@@ -249,7 +258,7 @@ export function FullRankings({
             </div>
           </div>
 
-          {displayRows.map((entry, i) => {
+          {pageRows.map((entry, i) => {
             const pct = Math.round((entry.points / maxPoints) * 100);
             const sl = streakLabel(entry.currentStreak);
             const lastVoted = formatLastVoted(entry.lastVoteTimestamp);
@@ -264,7 +273,7 @@ export function FullRankings({
               >
                 {/* Rank (by points) */}
                 <div className="w-8 shrink-0 text-center font-display font-extrabold text-sm text-black/40">
-                  {sort === "points" ? i + 1 : rank}
+                  {sort === "points" ? (page - 1) * PAGE_SIZE + i + 1 : rank}
                 </div>
 
                 {/* Wallet + bar */}
@@ -317,6 +326,65 @@ export function FullRankings({
               </div>
             );
           })}
+
+          {/* Pagination footer */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between px-5 py-3 bg-[#F9F5E7] border-t-[3px] border-black">
+              <span className="font-display font-bold text-xs text-black/50 uppercase">
+                Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, sorted.length)} of {sorted.length}
+              </span>
+              <div className="flex items-center gap-0 border-2 border-black overflow-hidden">
+                <button
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className="px-4 py-2 font-display font-bold text-xs uppercase border-r-2 border-black bg-white hover:bg-[#FEFCE8] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                >
+                  ← Prev
+                </button>
+
+                {/* Page number pills */}
+                {Array.from({ length: totalPages }, (_, idx) => idx + 1)
+                  .filter((p) => p === 1 || p === totalPages || Math.abs(p - page) <= 1)
+                  .reduce<(number | "…")[]>((acc, p, i, arr) => {
+                    if (i > 0 && typeof arr[i - 1] === "number" && (p as number) - (arr[i - 1] as number) > 1) {
+                      acc.push("…");
+                    }
+                    acc.push(p);
+                    return acc;
+                  }, [])
+                  .map((item, idx) =>
+                    item === "…" ? (
+                      <span
+                        key={`ellipsis-${idx}`}
+                        className="px-3 py-2 font-display font-bold text-xs border-r-2 border-black bg-white text-black/40 select-none"
+                      >
+                        …
+                      </span>
+                    ) : (
+                      <button
+                        key={item}
+                        onClick={() => setPage(item as number)}
+                        className={`px-3 py-2 font-display font-bold text-xs border-r-2 border-black transition-colors ${
+                          page === item
+                            ? "bg-[#EA580C] text-white"
+                            : "bg-white text-black hover:bg-[#FEFCE8]"
+                        }`}
+                      >
+                        {item}
+                      </button>
+                    )
+                  )}
+
+                <button
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages}
+                  className="px-4 py-2 font-display font-bold text-xs uppercase bg-white hover:bg-[#FEFCE8] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                >
+                  Next →
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

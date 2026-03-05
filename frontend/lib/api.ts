@@ -13,7 +13,7 @@ export interface LeaderboardEntry {
   lastVoteTimestamp: number;
 }
 
-export async function fetchLeaderboard(limit = 20): Promise<LeaderboardEntry[]> {
+export async function fetchLeaderboard(limit = 10000): Promise<LeaderboardEntry[]> {
   const res = await fetch(`${API_BASE}/leaderboard?limit=${limit}`, {
     next: { revalidate: 30 },
   });
