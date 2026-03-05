@@ -5,9 +5,8 @@ import {
   type LeaderboardEntry,
 } from "@/lib/api";
 import { truncateAddress, formatPoints, streakLabel } from "@/lib/api";
-import Link from "next/link";
 import { ReferralWidget } from "@/components/sections/ReferralWidget";
-import { CopyAddress } from "@/components/ui/CopyAddress";
+import { FullRankings } from "@/components/sections/FullRankings";
 
 export const revalidate = 30;
 
@@ -20,35 +19,6 @@ const podiumColors = ["bg-[#EA580C]", "bg-[#EAB308]", "bg-[#0891B2]"];
 const podiumIcons = ["👑", "🥈", "🥉"];
 const podiumLabels = ["1st Place", "2nd Place", "3rd Place"];
 
-function getTier(points: number): { label: string; bg: string } {
-  if (points >= 40) return { label: "Elite", bg: "bg-[#0891B2]" };
-  if (points >= 20) return { label: "Champion", bg: "bg-[#EA580C]" };
-  if (points >= 5) return { label: "Active", bg: "bg-[#EAB308]" };
-  return { label: "Newcomer", bg: "bg-white" };
-}
-
-function formatLastVoted(lastVoteTimestamp: number): string {
-  if (!lastVoteTimestamp) return "No votes yet";
-
-  const nowMs = Date.now();
-  const voteMs = lastVoteTimestamp * 1000;
-  const diffSeconds = Math.max(0, Math.floor((nowMs - voteMs) / 1000));
-
-  if (diffSeconds < 60) return "Just now";
-
-  const minutes = Math.floor(diffSeconds / 60);
-  if (minutes < 60) {
-    return `${minutes} min${minutes === 1 ? "" : "s"} ago`;
-  }
-
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) {
-    return `${hours} hour${hours === 1 ? "" : "s"} ago`;
-  }
-
-  const days = Math.floor(hours / 24);
-  return `${days} day${days === 1 ? "" : "s"} ago`;
-}
 
 export default async function LeaderboardPage() {
   let entries: LeaderboardEntry[] = [];
@@ -66,12 +36,9 @@ export default async function LeaderboardPage() {
     rateLimited = e instanceof Error && e.message === RATE_LIMIT_MESSAGE;
   }
 
-  const sortedByRecent = [...entries].sort(
-    (a, b) => b.lastVoteTimestamp - a.lastVoteTimestamp
-  );
-  const top3 = sortedByRecent.slice(0, 3);
-  const recentTop20 = sortedByRecent.slice(0, 20);
-  const maxPoints = entries[0]?.points || 1;
+  const sortedByPoints = [...entries].sort((a, b) => b.points - a.points);
+  const top3 = sortedByPoints.slice(0, 3);
+  const maxPoints = sortedByPoints[0]?.points || 1;
   const totalVotesOnChain =
     stats?.totalVotesRecorded ?? entries.reduce((s, e) => s + e.voteCount, 0);
 
@@ -166,7 +133,7 @@ export default async function LeaderboardPage() {
 
         {/* Top 3 Podium */}
         {top3.length > 0 && (
-          <div>
+          <div className="pb-12">
             <h2 className="font-display font-extrabold text-2xl uppercase mb-6 flex items-center gap-2 text-black">
               <span>👑</span> Top Performers
             </h2>
@@ -234,105 +201,10 @@ export default async function LeaderboardPage() {
           </div>
         )}
 
-        {/* Full table */}
-        {recentTop20.length > 0 && (
-          <div>
-            <h2 className="font-display font-extrabold text-2xl uppercase mb-6 flex items-center gap-2 text-black">
-              <span>📊</span> Full Rankings
-              <span className="ml-auto flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-[#EA580C] pulse-dot" />
-                <span className="font-display font-bold text-xs text-black/60 uppercase">
-                  Live · Refreshes every 30s
-                </span>
-              </span>
-            </h2>
-
-            <div className="border-[3px] border-black shadow-neo-lg overflow-hidden bg-white">
-              {/* Col headers */}
-              <div className="flex items-center gap-4 px-5 py-3 bg-[#111] text-white border-b-[3px] border-black">
-                <div className="w-8 font-display font-bold text-xs uppercase text-white/60">
-                  #
-                </div>
-                <div className="flex-1 font-display font-bold text-xs uppercase text-white/60">
-                  Voter
-                </div>
-                <div className="hidden md:block w-20 text-right font-display font-bold text-xs uppercase text-white/60">
-                  Streak
-                </div>
-                <div className="hidden md:block w-16 text-right font-display font-bold text-xs uppercase text-white/60">
-                  Votes
-                </div>
-                <div className="w-16 text-right font-display font-bold text-xs uppercase text-white/60">
-                  Points
-                </div>
-              </div>
-
-              {recentTop20.map((entry, i) => {
-                const pct = Math.round((entry.points / maxPoints) * 100);
-                const sl = streakLabel(entry.currentStreak);
-                const lastVoted = formatLastVoted(entry.lastVoteTimestamp);
-
-                return (
-                  <div
-                    key={entry.voter}
-                    className={`flex items-center gap-4 px-5 py-4 border-b-2 border-black last:border-0 hover:bg-[#FEFCE8] transition-colors group ${i === 0 ? "bg-[#FEF9EE]" : ""}`}
-                  >
-                    {/* Rank */}
-                    <div className="w-8 shrink-0 text-center font-display font-extrabold text-sm text-black/40">
-                      {i + 1}
-                    </div>
-
-                    {/* Wallet + bar */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <CopyAddress address={entry.voter} />
-                        <a
-                          href={`https://explorer.solana.com/address/${entry.voter}?cluster=devnet`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="opacity-0 group-hover:opacity-100 transition-opacity font-display font-bold text-xs text-[#EA580C] border border-[#EA580C] px-1.5 py-0.5 leading-none"
-                        >
-                          ↗
-                        </a>
-                      </div>
-                      <div className="w-full max-w-xs bg-gray-100 border border-black h-2.5 p-px">
-                        <div
-                          className="bg-[#EA580C] h-full border-r border-black"
-                          style={{ width: `${pct}%` }}
-                        />
-                      </div>
-                      <div className="mt-1 font-display text-[11px] text-black/50">
-                        Last vote · {lastVoted}
-                      </div>
-                    </div>
-
-                    {/* Streak */}
-                    <div className="hidden md:block w-20 text-right">
-                      {entry.currentStreak > 0 && (
-                        <span className="font-display font-bold text-xs text-black/70">
-                          {sl || `${entry.currentStreak}d`}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Votes */}
-                    <div className="hidden md:block w-16 text-right font-mono text-sm text-black/60">
-                      {entry.voteCount}
-                    </div>
-
-                    {/* Points */}
-                    <div className="w-16 text-right">
-                      <span className="font-display font-extrabold text-lg text-black">
-                        {formatPoints(entry.points)}
-                      </span>
-                      <span className="font-display font-bold text-xs text-black/40 ml-0.5">
-                        PTS
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+        {/* Full Rankings — interactive sort + search */}
+        {entries.length > 0 && (
+          <div className="pt-8">
+            <FullRankings entries={entries} maxPoints={maxPoints} />
           </div>
         )}
 

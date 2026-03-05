@@ -42,10 +42,8 @@ export async function LeaderboardPreview() {
     /* show empty */
   }
 
-  const sortedByRecent = [...entries].sort(
-    (a, b) => b.lastVoteTimestamp - a.lastVoteTimestamp
-  );
-  const top5 = sortedByRecent.slice(0, 5);
+  const sortedByPoints = [...entries].sort((a, b) => b.points - a.points);
+  const top5 = sortedByPoints.slice(0, 5);
   const maxPoints = top5[0]?.points || 1;
 
   return (
